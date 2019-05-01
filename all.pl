@@ -1,4 +1,4 @@
-:- module(all,[takeAction/3,play/2,minimax/4,utility/3]).
+:- module(all,[takeAction/3,play/2,minimax/4,utility/3,findMax/2]).
 %takeAction(Action, L, NewL).
 takeAction(move_Left, L, NewL):- moveLeft(L, NewL).
 takeAction(move_Right, L, NewL):- moveRight(L, NewL).
@@ -16,7 +16,7 @@ randomGenrator(OldList,NewList):-
       bagof(C ,nth0(C, OldList,0), Nlist) ,
       random_member(Index,Nlist),
       %random_member(Value,[2,4]),
-      replaceInThePosition(OldList,Index,1024,NewList).
+      replaceInThePosition(OldList,Index,2,NewList).
 	  
 utility(L, 2048, win):-
 	member(2048, L),!.
