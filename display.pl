@@ -2,14 +2,22 @@
 :- use_module(all).
 
 bestAction(L, NextL, BestAction):-
-	minimax(L, BestAction, _,15),
+	minimax(L, BestAction, _,10),
 	takeAction(BestAction,L, NextL).
-	
+drawPosit(L):-
+	moveLeft(L,L),
+	moveRight(L,L),
+	moveDown(L,L),
+	moveUp(L,L),
+	\+member(0,L),
+	findMax(L, Score),
+	format('Your score is ~w .', Score),
+    nl, write('End of game.').
 startPosition:-
 	  write('Enter start position list:'), nl,
 	  read(L), nl,
 	  display(L), nl,
-	  start(L, action).
+	  start(L, random).
 	  
 draw(0) :- format('|    ').
 draw(X) :- member(X,[2,4,8]), format('|  ~d ', X).
@@ -32,26 +40,16 @@ start(L, action) :-
 	bestAction(L,NextL,BestAction),
 	format('The best Action is ~w ', BestAction),
 	display(NextL),
-	utility(NextL, Score,Val),
+	utility(NextL, _,Val),
 	(
         Val = win, !,
         nl, write('You win.'), nl
         ;
-		Val = draw, !,nl,
-		format('Your score is ~w .', Score),
-        nl, write('End of game.')
-        ;
-        start(L, random)
+        start(NextL, random)
     ).
 	
 start(L, random) :-
 	play(L, NextL),
 	nl, display(NextL),
-	utility(NextL, Score,Val),
-	(
-		Val = draw, !,nl,
-		format('Your score is ~w .', Score),
-        nl, write('End of game.')
-        ;
-        start(L, action)
-    ).
+	\+drawPosit(NextL),
+    start(NextL, action).
