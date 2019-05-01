@@ -2,7 +2,7 @@
 :- use_module(all).
 
 bestAction(L, NextL, BestAction):-
-	minimax(L, BestAction, _),
+	minimax(L, BestAction, _,15),
 	takeAction(BestAction,L, NextL).
 	
 startPosition:-
@@ -30,7 +30,7 @@ display([A1,A2,A3,A4,B1,B2,B3,B4,C1,C2,C3,C4,D1,D2,D3,D4]) :-
 
 start(L, action) :-
 	bestAction(L,NextL,BestAction),
-	format('The best Action is ~d ', BestAction),
+	format('The best Action is ~w ', BestAction),
 	display(NextL),
 	utility(NextL, Score,Val),
 	(
@@ -38,7 +38,7 @@ start(L, action) :-
         nl, write('You win.'), nl
         ;
 		Val = draw, !,nl,
-		format('Your score is ~d .', Score),
+		format('Your score is ~w .', Score),
         nl, write('End of game.')
         ;
         start(L, random)
@@ -50,7 +50,7 @@ start(L, random) :-
 	utility(NextL, Score,Val),
 	(
 		Val = draw, !,nl,
-		format('Your score is ~d .', Score),
+		format('Your score is ~w .', Score),
         nl, write('End of game.')
         ;
         start(L, action)

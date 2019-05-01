@@ -1,4 +1,4 @@
-:- module(all,[takeAction/3,play/2,minimax/3,utility/3]).
+:- module(all,[takeAction/3,play/2,minimax/4,utility/3]).
 %takeAction(Action, L, NewL).
 takeAction(move_Left, L, NewL):- moveLeft(L, NewL).
 takeAction(move_Right, L, NewL):- moveRight(L, NewL).
@@ -33,21 +33,23 @@ findMax([X|Xs], WK, R):- X >  WK, findMax(Xs, X, R). %WK is Carry about
 findMax([X|Xs], WK, R):- X =< WK, findMax(Xs, WK, R).
 findMax([X|Xs], R):- findMax(Xs, X, R). %start
 
-minimax(L, BestAction, Val) :-                    
-    bagof(NextAction, takeAction(NextAction, L, _), NextActionList),
-    best(NextActionList, BestAction, Val, L), !.
+minimax(L, BestAction, Val, Depth) :-                    
+    Depth > 0,
+	NewDepth is Depth - 1,
+	bagof(NextAction, takeAction(NextAction, L, _), NextActionList),
+    best(NextActionList, BestAction, Val, L, NewDepth), !.
 
-minimax(L, _, Val) :- 
+minimax(L, _, Val, _) :- 
     utility(L, Val,_).
 
-best([NextAction], NextAction, Val, L) :-
+best([NextAction], NextAction, Val, L, Depth) :-
 	takeAction(NextAction, L, NextL),
-    minimax(NextL, _, Val), !.
+    minimax(NextL, _, Val, Depth), !.
 
-best([Action1 | ActionList], BestAction, BestVal, L) :-
+best([Action1 | ActionList], BestAction, BestVal, L, Depth) :-
 	takeAction(Action1, L, NextL),
-    minimax(NextL, _, Val1),
-    best(ActionList, Action2, Val2, L),
+    minimax(NextL, _, Val1, Depth),
+    best(ActionList, Action2, Val2, L, Depth),
     betterOf(Action1, Val1, Action2, Val2, BestAction, BestVal).
 
 betterOf(Action0, Val0, _, Val1, Action0, Val0) :-   % Action0 better
